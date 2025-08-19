@@ -1,0 +1,33 @@
+import math
+
+# Alpha-Beta Pruning Algorithm
+def alpha_beta(depth, node_index, maximizing_player, values, alpha, beta):
+    # Leaf node condition
+    if depth == 3:   # depth limit (tree height)
+        return values[node_index]
+    
+    if maximizing_player:
+        max_eval = -math.inf
+        for i in range(2):  # two children
+            eval = alpha_beta(depth + 1, node_index * 2 + i, False, values, alpha, beta)
+            max_eval = max(max_eval, eval)
+            alpha = max(alpha, eval)
+            if beta <= alpha:  # prune
+                break
+        return max_eval
+    else:
+        min_eval = math.inf
+        for i in range(2):  # two children
+            eval = alpha_beta(depth + 1, node_index * 2 + i, True, values, alpha, beta)
+            min_eval = min(min_eval, eval)
+            beta = min(beta, eval)
+            if beta <= alpha:  # prune
+                break
+        return min_eval
+
+# Example: Leaf node values
+values = [3, 5, 6, 9, 1, 2, 0, -1]
+
+print("Leaf Nodes:", values)
+result = alpha_beta(0, 0, True, values, -math.inf, math.inf)
+print("Optimal Value (with Alpha-Beta Pruning):", result)
