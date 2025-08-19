@@ -1,0 +1,68 @@
+from collections import deque
+
+# Function to check if the puzzle is solvable
+def is_solvable(puzzle):
+    flat = sum(puzzle, [])
+    inv_count = 0
+    for i in range(len(flat)):
+        for j in range(i + 1, len(flat)):
+            if flat[i] and flat[j] and flat[i] > flat[j]:
+                inv_count += 1
+    return inv_count % 2 == 0
+
+# Function to print puzzle state
+def print_puzzle(state):
+    for row in state:
+        print(row)
+    print()
+
+# Get possible moves (up, down, left, right)
+def get_neighbors(state):
+    neighbors = []
+    n = len(state)
+    zero_x, zero_y = [(ix, iy) for ix, row in enumerate(state) for iy, i in enumerate(row) if i == 0][0]
+    moves = [(-1, 0), (1, 0), (0, -1), (0, 1)]
+    
+    for dx, dy in moves:
+        x, y = zero_x + dx, zero_y + dy
+        if 0 <= x < n and 0 <= y < n:
+            new_state = [row[:] for row in state]
+            new_state[zero_x][zero_y], new_state[x][y] = new_state[x][y], new_state[zero_x][zero_y]
+            neighbors.append(new_state)
+    return neighbors
+
+# BFS to solve 8-puzzle
+def solve_puzzle(start, goal):
+    if not is_solvable(start):
+        print("Puzzle is not solvable")
+        return
+    
+    visited = set()
+    queue = deque([(start, [])])
+    
+    while queue:
+        state, path = queue.popleft()
+        if state == goal:
+            print("Solution found in", len(path), "moves:")
+            for step in path + [state]:
+                print_puzzle(step)
+            return
+        
+        visited.add(str(state))
+        
+        for neighbor in get_neighbors(state):
+            if str(neighbor) not in visited:
+                queue.append((neighbor, path + [state]))
+    
+    print("No solution found.")
+
+# Example Input
+start_state = [[1, 2, 3],
+               [4, 0, 6],
+               [7, 5, 8]]
+
+goal_state = [[1, 2, 3],
+              [4, 5, 6],
+              [7, 8, 0]]
+
+solve_puzzle(start_state, goal_state)
