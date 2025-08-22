@@ -1,0 +1,29 @@
+% Facts: student(StudentName, SubjectCode).
+student(ravi, cs101).
+student(sita, cs101).
+student(akash, cs102).
+student(meena, cs103).
+student(kumar, cs102).
+
+% Facts: teacher(TeacherName, SubjectCode).
+teacher(dr_ram, cs101).
+teacher(dr_anu, cs102).
+teacher(dr_kumar, cs103).
+
+% Rule: A student is taught by a teacher if they share the same subject code
+taught_by(Student, Teacher) :-
+    student(Student, SubCode),
+    teacher(Teacher, SubCode).
+
+% Example queries:
+% ?- taught_by(ravi, Teacher).
+% Teacher = dr_ram.
+%
+% ?- taught_by(sita, Teacher).
+% Teacher = dr_ram.
+%
+% ?- taught_by(akash, Teacher).
+% Teacher = dr_anu.
+%
+% ?- taught_by(Student, dr_kumar).
+% Student = meena.
